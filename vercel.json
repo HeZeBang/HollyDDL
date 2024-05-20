@@ -1,8 +1,7 @@
 {
     "version": 2,
     "routes": [
-        {"src": "/api/v1/(.*)","dest": "https://runapi.zrlnmsl.top:8088/api/v1/$1"},
-        {"src": "/api/v2/(.*)","dest": "/api/index.py"}
+        {"src": "/api/(.*)","dest": "/api/index.py"}
     ]
   }
   
