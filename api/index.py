@@ -1,5 +1,4 @@
 import flask
-import requests
 from gsUtils import *
 import egateHandler, hydroHandler
 
