@@ -95,9 +95,14 @@ function App() {
           setIsLoading(isLoading => isLoading.map((value, index) => index == APIList.indexOf(item) ? false : value))
           return res.json()
         })
+        .catch(error => {
+          console.error(error)
+          setIsLoading(isLoading => isLoading.map((value, index) => index == APIList.indexOf(item) ? false : value))
+        })
     }))
       .then(result => {
         for (let i = 0; i < result.length; i++) {
+          if(!result[i]) continue;
           if (result[i].status == "success") {
             for (let j = 0; j < result[i].data.length; j++) {
               if (!result[i].data[j].submitted)
@@ -105,12 +110,10 @@ function App() {
             }
           }
         }
+      })
+      .finally(()=>{
         tmpData.sort((a, b) => a.due - b.due)
         setData(tmpData)
-      })
-      .catch(error => {
-        setError(error)
-        // setIsLoading(APIList.map(() => false))
       })
   }
 
