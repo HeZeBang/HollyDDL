@@ -6,6 +6,9 @@ import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem
 import {
   timelineOppositeContentClasses,
 } from '@mui/lab/TimelineOppositeContent';
+import {
+  timelineContentClasses
+} from '@mui/lab/TimelineContent';
 
 // Environment
 const env = process.env.NODE_ENV || 'development'
@@ -212,7 +215,7 @@ function App() {
           </Grid>
 
           <Grid item xs={1}>
-            <Paper elevation={3} sx={{ padding: 2, margin: 2, overflow: "hidden" }}>
+            <Paper elevation={3} sx={{ padding: 2, overflow: "scroll" }}>
               <Typography variant="h4" component="h1" gutterBottom>Your DDLs</Typography>
               <Divider />
               <Timeline
@@ -224,7 +227,7 @@ function App() {
               >
                 {data.map((item, index) => (
                   <TimelineItem>
-                    <TimelineOppositeContent color="text.secondary">
+                    <TimelineOppositeContent color="text.secondary" sx={{minWidth: '60px', pl: 0, fontSize: '10pt'}}>
                       {new Date(Number(item.due) * 1000).toLocaleString()}
                     </TimelineOppositeContent>
                     <TimelineSeparator>
@@ -232,7 +235,7 @@ function App() {
                       <TimelineConnector />
                     </TimelineSeparator>
                     <TimelineContent>
-                      <Typography variant="h6" component="h1">{item.title}</Typography>
+                      <Typography variant="h6" component="h1" sx={{wordBreak:"break-word"}}>{item.title}</Typography>
                       <Typography variant="body1" component="p" color="text.secondary">{item.course}</Typography>
                       <Typography variant="body2" component="p" color="text.secondary">
                         Status: {item.status}
