@@ -3,7 +3,6 @@ import requests
 import base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
-import json
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188',

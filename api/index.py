@@ -1,6 +1,6 @@
 import flask
-from gsUtils import *
-import egateHandler, hydroHandler
+from utils import egateHandler, hydroHandler
+from utils.gsUtils import *
 
 app = flask.Flask(__name__)
 
