@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, Container, Divider, Grid, LinearProgress, Paper, TextField, ThemeProvider, Typography, styled } from '@mui/material';
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, Container, Divider, Grid, LinearProgress, Paper, Snackbar, TextField, ThemeProvider, Typography, styled } from '@mui/material';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator } from '@mui/lab';
 import {
   timelineOppositeContentClasses,
@@ -64,8 +64,10 @@ const APIList = [
 function App() {
 
   const [isLoading, setIsLoading] = React.useState(APIList.map(() => false))
-  const [data, setData] = React.useState<any[]>([])
+  const [data, setData] = React.useState<any[]>(localStorage.getItem('data') ? JSON.parse(localStorage.getItem('data') as string) : [])
   const [error, setError] = React.useState("")
+  const [open, setOpen] = React.useState(false)
+  const [showForm, setShowForm] = React.useState(localStorage.getItem('showForm') === 'true' ? true : false)
 
   const fetchData = async () => {
     APIList.forEach((item) => {
@@ -74,7 +76,7 @@ function App() {
         localStorage.setItem(`${item.name}-${formitem.name}`, value)
       })
     })
-    
+
     var tmpData = [] as any[];
 
     Promise.all(APIList.map(async (item) => {
@@ -99,13 +101,14 @@ function App() {
           return res.json()
         })
         .catch(error => {
-          console.error(error)
+          console.error(error);
+          setError(error);
           setIsLoading(isLoading => isLoading.map((value, index) => index == APIList.indexOf(item) ? false : value))
         })
     }))
       .then(result => {
         for (let i = 0; i < result.length; i++) {
-          if(!result[i]) continue;
+          if (!result[i]) continue;
           if (result[i].status == "success") {
             for (let j = 0; j < result[i].data.length; j++) {
               if (!result[i].data[j].submitted)
@@ -114,9 +117,10 @@ function App() {
           }
         }
       })
-      .finally(()=>{
+      .finally(() => {
         tmpData.sort((a, b) => a.due - b.due)
         setData(tmpData)
+        localStorage.setItem('data', JSON.stringify(tmpData))
       })
   }
 
@@ -133,9 +137,19 @@ function App() {
     fetchData()
   }, [])
 
+  useEffect(() => {
+    setOpen(error !== "")
+  }, [error])
+
   return (
     <div className="App">
       <Container component="main" maxWidth="xl">
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={() => setOpen(false)}
+          message={error.toString()}
+        />
 
         <Grid
           container spacing={{ xs: 2, md: 3 }}
@@ -165,16 +179,25 @@ function App() {
                 variant='contained'
                 color='primary'
                 fullWidth
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 2, mb: 1 }}
                 onClick={fetchData}
                 disabled={isLoading.some((value) => value)}
               >Login & Fetch</Button>
+
+              <Button
+                variant={showForm ? 'contained' : 'outlined'}
+                onClick={() => { setShowForm(!showForm); localStorage.setItem('showForm', showForm ? 'false' : 'true') }}
+                sx={{ mt: 1, mb: 2 }}
+                fullWidth
+              >{showForm ? 'Hide' : 'Show'} Login Form</Button>
+
               <Grid
                 container spacing={{ xs: 2, md: 3 }}
                 columns={{ xs: 4, sm: 4, md: 8, lg: 12 }}
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
+                visibility={showForm ? 'visible' : 'hidden'}
               >
                 {APIList.map((item, index) => (
                   <Grid item xs={4} sm={4} md={4} key={index}>
@@ -204,7 +227,7 @@ function App() {
                           />))}
                       </CardContent>
                       <CardActions>
-                        {isLoading[index]? (<LinearProgress sx={{width: '100%'}}  />):(<></>)}
+                        {isLoading[index] ? (<LinearProgress sx={{ width: '100%' }} />) : (<></>)}
                         {/* <Button onClick={() => {onSaveClick(index)}}>Save</Button> */}
                       </CardActions>
                     </Card>
@@ -227,7 +250,7 @@ function App() {
               >
                 {data.map((item, index) => (
                   <TimelineItem>
-                    <TimelineOppositeContent color="text.secondary" sx={{minWidth: '60px', pl: 0, fontSize: '10pt'}}>
+                    <TimelineOppositeContent color="text.secondary" sx={{ minWidth: '60px', pl: 0, fontSize: '10pt' }}>
                       {new Date(Number(item.due) * 1000).toLocaleString()}
                     </TimelineOppositeContent>
                     <TimelineSeparator>
@@ -235,7 +258,7 @@ function App() {
                       <TimelineConnector />
                     </TimelineSeparator>
                     <TimelineContent>
-                      <Typography variant="h6" component="h1" sx={{wordBreak:"break-word"}}>{item.title}</Typography>
+                      <Typography variant="h6" component="h1" sx={{ wordBreak: "break-word" }}>{item.title}</Typography>
                       <Typography variant="body1" component="p" color="text.secondary">{item.course}</Typography>
                       <Typography variant="body2" component="p" color="text.secondary">
                         Status: {item.status}
