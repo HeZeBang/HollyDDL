@@ -85,6 +85,14 @@ def ojHandler() -> flask.Response:
         'status': 'success',
         'data': data
     }
+    
+# Handle Not Found
+@app.errorhandler(404)
+def page_not_found(e):
+    return {
+        'status': 'error',
+        'message': 'Not Found: ' + flask.request.url
+    }
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
