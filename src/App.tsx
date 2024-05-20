@@ -67,7 +67,7 @@ function App() {
   const [data, setData] = React.useState<any[]>(localStorage.getItem('data') ? JSON.parse(localStorage.getItem('data') as string) : [])
   const [error, setError] = React.useState("")
   const [open, setOpen] = React.useState(false)
-  const [showForm, setShowForm] = React.useState(localStorage.getItem('showForm') === 'true' ? true : false)
+  const [showForm, setShowForm] = React.useState(localStorage.getItem('showForm') === 'false' ? false : true)
 
   const fetchData = async () => {
     APIList.forEach((item) => {
@@ -156,15 +156,13 @@ function App() {
           columns={{ xs: 1, sm: 2, md: 2 }}
           direction="row"
           justifyContent="center"
-          alignItems="center"
           sx={{
-            marginTop: 8,
+            pt: 8
           }}
         >
           <Grid item xs={1}>
             <Box
               sx={{
-                marginTop: 8,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -197,7 +195,9 @@ function App() {
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
-                visibility={showForm ? 'visible' : 'hidden'}
+                sx={{
+                  display: showForm ? 'flex' : 'none',
+                }}
               >
                 {APIList.map((item, index) => (
                   <Grid item xs={4} sm={4} md={4} key={index}>
