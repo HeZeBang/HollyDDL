@@ -112,7 +112,7 @@ function App() {
         }) : null;
     }))
       .then(result => {
-        console.log(result)
+        // console.log(result)
         for (let i = 0; i < result.length; i++) {
           if (!result[i]) continue;
           if (result[i].status == "success") {
