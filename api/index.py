@@ -29,7 +29,7 @@ def gsHandler() -> flask.Response:
     data = []
 
     for course in gs.get_courses(role=Role.STUDENT):
-        print(course)
+        # print(course)
         for assignment in gs.get_assignments(course):
             if assignment['dueDate']:
                 due = assignment['dueDate']
