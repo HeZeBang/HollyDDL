@@ -81,13 +81,18 @@ function App() {
 
     Promise.all(APIList.map(async (item) => {
       setIsLoading(isLoading => isLoading.map((value, index) => index === APIList.indexOf(item) ? true : value))
-      var postData = {} as any
+      var postData = {} as any;
+      var flag = true;
       item.formdata.forEach((formitem) => {
         const value = localStorage.getItem(`${item.name}-${formitem.name}`)
+        if(value === null || value === "" || value === undefined) {
+          setIsLoading(isLoading => isLoading.map((value, index) => index == APIList.indexOf(item) ? false : value))
+          flag = false;
+        }
         postData[formitem.name] = value;
       })
 
-      return fetch(
+      return flag? fetch(
         (env == "development" ? "http://localhost:5000" : "") + item.api,
         {
           method: 'POST',
@@ -102,11 +107,12 @@ function App() {
         })
         .catch(error => {
           console.error(error);
-          setError(error);
+          setError(`${item.name} : ${error}`);
           setIsLoading(isLoading => isLoading.map((value, index) => index == APIList.indexOf(item) ? false : value))
-        })
+        }) : null;
     }))
       .then(result => {
+        console.log(result)
         for (let i = 0; i < result.length; i++) {
           if (!result[i]) continue;
           if (result[i].status == "success") {
@@ -121,6 +127,7 @@ function App() {
         tmpData.sort((a, b) => a.due - b.due)
         setData(tmpData)
         localStorage.setItem('data', JSON.stringify(tmpData))
+        setIsLoading(isLoading => isLoading.map(() => false))
       })
   }
 
