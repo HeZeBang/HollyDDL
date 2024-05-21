@@ -164,7 +164,7 @@ function App() {
           direction="row"
           justifyContent="center"
           sx={{
-            pt: 8
+            pt: 8, pb: 2,
           }}
         >
           <Grid item xs={1}>
@@ -245,7 +245,7 @@ function App() {
           </Grid>
 
           <Grid item xs={1}>
-            <Paper elevation={3} sx={{ padding: 2, overflow: "scroll" }}>
+            <Paper elevation={3} sx={{ padding: 2, overflow: "auto" }}>
               <Typography variant="h4" component="h1" gutterBottom>Your DDLs</Typography>
               <Divider />
               <Timeline
@@ -279,7 +279,7 @@ function App() {
           </Grid>
         </Grid>
       </Container>
-
+      <img src={"https://ipacel.cc/+/MoeCounter2/?name=hollyddl"} />
     </div >
   );
 }
