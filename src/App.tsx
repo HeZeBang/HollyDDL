@@ -9,6 +9,7 @@ import {
 import {
   timelineContentClasses
 } from '@mui/lab/TimelineContent';
+import Typewriter from 'typewriter-effect';
 
 // Environment
 const env = process.env.NODE_ENV || 'development'
@@ -85,14 +86,14 @@ function App() {
       var flag = true;
       item.formdata.forEach((formitem) => {
         const value = localStorage.getItem(`${item.name}-${formitem.name}`)
-        if(value === null || value === "" || value === undefined) {
+        if (value === null || value === "" || value === undefined) {
           setIsLoading(isLoading => isLoading.map((value, index) => index == APIList.indexOf(item) ? false : value))
           flag = false;
         }
         postData[formitem.name] = value;
       })
 
-      return flag? fetch(
+      return flag ? fetch(
         (env == "development" ? "http://localhost:5000" : "") + item.api,
         {
           method: 'POST',
@@ -177,8 +178,37 @@ function App() {
             >
               <img src="LOGO.png" alt="logo" width="200" height="200" />
               <Typography variant="h2" component="h1">Holly DDL</Typography>
-              <Typography variant="h5" component="span" gutterBottom>Check your DDL in one site</Typography>
-
+              <Typography variant="h6" component="code" sx={{minHeight: '3.5em'}}>
+                <Typewriter
+                  onInit={(typewriter) => {
+                    typewriter
+                      .typeString('Check your DDL on one site')
+                      .pauseFor(2000)
+                      .deleteAll()
+                      .typeString('Shanghai 3.3 University')
+                      .deleteChars(15)
+                      .typeString('Tech University cares you!')
+                      .pauseFor(2000)
+                      .deleteAll()
+                      .typeString('Holly DDL = Holy S**t + Wholly DDL!')
+                      .pauseFor(2000)
+                      .deleteAll()
+                      .typeString('DDLs are not the only thing you need to care about')
+                      .pauseFor(2000)
+                      .deleteAll()
+                      .typeString('Holly DDL is an open source project~')
+                      .pauseFor(2000)
+                      .deleteAll()
+                      .typeString('Github Repo: HeZeBang/HollyDDL')
+                      .pauseFor(2000)
+                      .deleteAll()
+                      .start();
+                  }}
+                  options={{
+                    loop: true,
+                  }}
+                />
+              </Typography>
 
               <Button
                 variant='contained'
