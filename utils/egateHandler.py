@@ -66,7 +66,7 @@ def getBB(sess: requests.Session):
 
     for item in response:
         title = item["title"]
-        due = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S").timestamp()
+        due = datetime.fromisoformat(item["end"] + "+08:00").timestamp()
         submitted = False
         course = item["calendarName"]
         status = "Attemptable" if item["attemptable"] else "Unattemptable"
@@ -93,8 +93,7 @@ def getBB(sess: requests.Session):
 
     for item in response:
         title = item["title"]
-        # strpttime based on UTC +8
-        due = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone(8)).timestamp()
+        due = datetime.fromisoformat(item["end"] + "+08:00").timestamp()
         submitted = False
         course = item["calendarName"]
         status = "Attemptable" if item["attemptable"] else "Unattemptable"
