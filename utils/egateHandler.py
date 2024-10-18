@@ -94,7 +94,7 @@ def getBB(sess: requests.Session):
     for item in response:
         title = item["title"]
         # strpttime based on UTC +8
-        due = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S").astimezone(8).timestamp()
+        due = datetime.strptime(item["end"], "%Y-%m-%dT%H:%M:%S").astimezone(hours=8).timestamp()
         submitted = False
         course = item["calendarName"]
         status = "Attemptable" if item["attemptable"] else "Unattemptable"
