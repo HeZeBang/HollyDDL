@@ -1,4 +1,5 @@
 # HollyDDL
+
 A tool to check your deadline in Gradescope / Hydro / Blackboard
 
 ![Counter](https://ipacel.cc/+/MoeCounter2/?name=hollyddl)
@@ -18,11 +19,11 @@ HollyDDL will not collect your information.
 
 1. Clone the repo
 2. For frontend
-    - Use `npm` to install dependencies
-    - Run `npm start` to start dev server
+   - Use `npm` to install dependencies
+   - Run `npm run build` to build frontend
 3. For bakcend
-    - Use `pip` to install dependencies
-    - Use `python -m api.index` to start backend server
+   - Use `pip` to install dependencies
+   - Use `python -m api.index` to start backend server
 
 ## License
 
