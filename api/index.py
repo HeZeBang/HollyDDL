@@ -2,8 +2,11 @@ import flask
 from utils import egateHandler, hydroHandler
 from utils.gsUtils import *
 import urllib3
+import os
 
-app = flask.Flask(__name__)
+app = flask.Flask(
+    __name__, static_folder=os.path.join(os.getcwd(), "build"), static_url_path="/"
+)
 
 
 # Allow local CORS for debugging
@@ -13,6 +16,12 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST"
     return response
+
+
+@app.route("/", methods=["GET"])
+def index() -> flask.Response:
+    print("index")
+    return flask.send_file(os.path.join(app.static_folder, "index.html"))
 
 
 @app.route("/api/gradescope", methods=["POST"])
