@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, Container, Divider, Grid, LinearProgress, Paper, Snackbar, TextField, ThemeProvider, Typography, styled } from '@mui/material';
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, Chip, Collapse, Container, Divider, Grid, LinearProgress, Paper, Snackbar, TextField, ThemeProvider, Typography, styled } from '@mui/material';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator } from '@mui/lab';
 import {
   timelineOppositeContentClasses,
@@ -69,6 +69,7 @@ function App() {
   const [error, setError] = React.useState("")
   const [open, setOpen] = React.useState(false)
   const [showForm, setShowForm] = React.useState(localStorage.getItem('showForm') === 'false' ? false : true)
+  const [showHidden, setShowHidden] = React.useState(false)
 
   const fetchData = async () => {
     APIList.forEach((item) => {
@@ -178,7 +179,7 @@ function App() {
             >
               <img src="LOGO.png" alt="logo" width="200" height="200" />
               <Typography variant="h2" component="h1">Holly DDL</Typography>
-              <Typography variant="h6" component="code" sx={{minHeight: '3.5em'}}>
+              <Typography variant="h6" component="code" sx={{ minHeight: '3.5em' }}>
                 <Typewriter
                   onInit={(typewriter) => {
                     typewriter
@@ -226,58 +227,57 @@ function App() {
                 fullWidth
               >{showForm ? 'Hide' : 'Show'} Login Form</Button>
 
-              <Grid
-                container spacing={{ xs: 2, md: 3 }}
-                columns={{ xs: 4, sm: 4, md: 8, lg: 12 }}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                sx={{
-                  display: showForm ? 'flex' : 'none',
-                }}
-              >
-                {APIList.map((item, index) => (
-                  <Grid item xs={4} sm={4} md={4} key={index}>
-                    <Card elevation={2}>
-                      <CardContent>
-                        <Typography variant="h5" component="div" align='left'>
-                          Login into <code>{item.name}</code>
-                        </Typography>
-                        <Typography variant="body2" align='left'>
-                          {item.description}
-                        </Typography>
-                        {/* <Box component="form" onSubmit={() => { }} noValidate sx={{ mt: 1 }}>
+              <Collapse in={showForm}>
+                <Grid
+                  container spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 4, sm: 4, md: 8, lg: 12 }}
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  display="flex"
+                >
+                  {APIList.map((item, index) => (
+                    <Grid item xs={4} sm={4} md={4} key={index}>
+                      <Card elevation={2}>
+                        <CardContent>
+                          <Typography variant="h5" component="div" align='left'>
+                            Login into <code>{item.name}</code>
+                          </Typography>
+                          <Typography variant="body2" align='left'>
+                            {item.description}
+                          </Typography>
+                          {/* <Box component="form" onSubmit={() => { }} noValidate sx={{ mt: 1 }}>
                       
                     </Box> */}
-                        {item.formdata && item.formdata.map((formitem, formindex) => (
-                          <TextField
-                            key={formindex}
-                            margin="normal"
-                            required
-                            fullWidth
-                            id={`${item.name}-${formitem.name}`}
-                            label={formitem.name.toUpperCase()}
-                            name={`${item.name}-${formitem.name}`}
-                            type={formitem.type}
-                            autoComplete={`${item.name}-${formitem.name}`}
-                            defaultValue={localStorage.getItem(`${item.name}-${formitem.name}`) || ""}
-                          />))}
-                      </CardContent>
-                      <CardActions>
-                        {isLoading[index] ? (<LinearProgress sx={{ width: '100%' }} />) : (<></>)}
-                        {/* <Button onClick={() => {onSaveClick(index)}}>Save</Button> */}
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
+                          {item.formdata && item.formdata.map((formitem, formindex) => (
+                            <TextField
+                              key={formindex}
+                              margin="normal"
+                              required
+                              fullWidth
+                              id={`${item.name}-${formitem.name}`}
+                              label={formitem.name.toUpperCase()}
+                              name={`${item.name}-${formitem.name}`}
+                              type={formitem.type}
+                              autoComplete={`${item.name}-${formitem.name}`}
+                              defaultValue={localStorage.getItem(`${item.name}-${formitem.name}`) || ""}
+                            />))}
+                        </CardContent>
+                        <CardActions>
+                          {isLoading[index] ? (<LinearProgress sx={{ width: '100%' }} />) : (<></>)}
+                          {/* <Button onClick={() => {onSaveClick(index)}}>Save</Button> */}
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Collapse>
             </Box>
           </Grid>
 
           <Grid item xs={1}>
             <Paper elevation={3} sx={{ padding: 2, overflow: "auto" }}>
-              <Typography variant="h4" component="h1" gutterBottom>Your DDLs</Typography>
-              <Divider />
+              {/* <Typography variant="h4" component="h1">Deadlines</Typography> */}
               <Timeline
                 sx={{
                   [`& .${timelineOppositeContentClasses.root}`]: {
@@ -285,25 +285,56 @@ function App() {
                   },
                 }}
               >
-                {data.map((item, index) => (
-                  <TimelineItem>
-                    <TimelineOppositeContent color="text.secondary" sx={{ minWidth: '60px', pl: 0, fontSize: '10pt' }}>
-                      {new Date(Number(item.due) * 1000).toLocaleString()}
-                    </TimelineOppositeContent>
-                    <TimelineSeparator>
-                      <TimelineDot color={item.due > Date.now() / 1000 ? "primary" : "grey"} />
-                      <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      <Typography variant="h6" component="h1" sx={{ wordBreak: "break-word" }}>{item.title}</Typography>
-                      <Typography variant="body1" component="p" color="text.secondary">{item.course}</Typography>
-                      <Typography variant="body2" component="p" color="text.secondary">
-                        Status: {item.status}
-                      </Typography>
-                      <a href={item.url} target="_blank" rel="noreferrer">Detail</a>
-                    </TimelineContent>
-                  </TimelineItem>
-                ))}
+                <Collapse in={showHidden}>
+                  {
+                    data
+                      .filter(item => item.due <= Date.now() / 1000 - 7 * 24 * 60 * 60)
+                      .map((item, index) => (
+                        <TimelineItem>
+                          <TimelineOppositeContent color="text.secondary" sx={{ minWidth: '60px', pl: 0, fontSize: '10pt' }}>
+                            {new Date(Number(item.due) * 1000).toLocaleString()}
+                          </TimelineOppositeContent>
+                          <TimelineSeparator>
+                            <TimelineDot color={item.due > Date.now() / 1000 ? "primary" : "grey"} />
+                            <TimelineConnector />
+                          </TimelineSeparator>
+                          <TimelineContent>
+                            <Typography variant="h6" component="h1" sx={{ wordBreak: "break-word" }}>{item.title}</Typography>
+                            <Typography variant="body1" component="p" color="text.secondary">{item.course}</Typography>
+                            <Typography variant="body2" component="p" color="text.secondary">
+                              Status: {item.status}
+                            </Typography>
+                            <a href={item.url} target="_blank" rel="noreferrer">Detail</a>
+                          </TimelineContent>
+                        </TimelineItem>
+                      ))
+                  }
+                </Collapse>
+                <Divider>
+                  <Chip label="Only Recent" color={showHidden ? "default" : "primary"} onClick={() => setShowHidden(!showHidden)} />
+                </Divider>
+                {
+                  data
+                    .filter(item => item.due > Date.now() / 1000 - 7 * 24 * 60 * 60)
+                    .map((item, index) => (
+                      <TimelineItem>
+                        <TimelineOppositeContent color="text.secondary" sx={{ minWidth: '60px', pl: 0, fontSize: '10pt' }}>
+                          {new Date(Number(item.due) * 1000).toLocaleString()}
+                        </TimelineOppositeContent>
+                        <TimelineSeparator>
+                          <TimelineDot color={item.due > Date.now() / 1000 ? "primary" : "grey"} />
+                          <TimelineConnector />
+                        </TimelineSeparator>
+                        <TimelineContent>
+                          <Typography variant="h6" component="h1" sx={{ wordBreak: "break-word" }}>{item.title}</Typography>
+                          <Typography variant="body1" component="p" color="text.secondary">{item.course}</Typography>
+                          <Typography variant="body2" component="p" color="text.secondary">
+                            Status: {item.status}
+                          </Typography>
+                          <a href={item.url} target="_blank" rel="noreferrer">Detail</a>
+                        </TimelineContent>
+                      </TimelineItem>
+                    ))}
               </Timeline>
             </Paper>
           </Grid>
