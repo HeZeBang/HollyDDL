@@ -1,10 +1,11 @@
 from datetime import datetime
 import requests
 
-def login(username:str, password:str) -> requests.Session:
+def login(url:str, username:str, password:str) -> requests.Session:
     session = requests.Session()
+    base_url = url.rstrip('/')
     session.post(
-        "https://acm.shanghaitech.edu.cn/login",
+        f"{base_url}/login",
         data={
             "uname": username,
             "password": password,
@@ -20,9 +21,10 @@ def login(username:str, password:str) -> requests.Session:
     )
     return session
 
-def getHomework(session: requests.Session):
+def getHomework(url:str, session: requests.Session):
+    base_url = url.rstrip('/')
     response = session.get(
-        "https://acm.shanghaitech.edu.cn/homework",
+        f"{base_url}/homework",
         headers={
             "Accept": "application/json",
         }
@@ -40,7 +42,7 @@ def getHomework(session: requests.Session):
                 "due": datetime.strptime(item['endAt'][:-6], "%Y-%m-%dT%H:%M:%S").timestamp(),
                 "course": item['assign'][0],
                 "submitted": datetime.strptime(item['endAt'][:-6], "%Y-%m-%dT%H:%M:%S").timestamp() < datetime.now().timestamp(), # TODO: check if submitted
-                "url": "https://acm.shanghaitech.edu.cn/homework/" + item['docId'],
+                "url": f"{base_url}/homework" + item['docId'],
                 "status": "Live",
             }
         )

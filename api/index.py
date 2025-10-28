@@ -98,10 +98,10 @@ def ojHandler() -> flask.Response:
     payload = flask.request.get_json()
 
     # Login
-    session = hydroHandler.login(payload["username"], payload["password"])
+    session = hydroHandler.login(payload["url"], payload["username"], payload["password"])
 
     # Format response
-    data = hydroHandler.getHomework(session)
+    data = hydroHandler.getHomework(payload["url"], session)
 
     return flask.jsonify({"status": "success", "data": data})
 

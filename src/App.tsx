@@ -18,7 +18,12 @@ const APIList = [
   {
     name: "Hydro",
     description: "Hydro OJ's Homework, using ShanghaiTech ACM",
+    tip: "Please make sure the URL is like http://10.15.21.133/d/SI100B_2025_Autumn/, no homework or login behind",
     formdata: [
+      {
+        name: "url",
+        type: "text",
+      },
       {
         name: "username",
         type: "text",
@@ -29,7 +34,6 @@ const APIList = [
       }
     ],
     api: "/api/hydro",
-    closing: "Reworking the backend, temporarily closed",
   },
   {
     name: "Gradescope",
@@ -234,12 +238,48 @@ function App() {
                   columns={{ xs: 4, sm: 4, md: 8, lg: 12 }}
                   direction="row"
                   justifyContent="center"
-                  alignItems="center"
+                  alignItems="stretch"
                   display="flex"
                 >
-                  {APIList.map((item, index) => (
-                    <Grid item xs={4} sm={4} md={4} key={index}>
-                      <Card elevation={2}>
+                  {/* Hydro - Full Width */}
+                  <Grid item xs={4} sm={4} md={8} lg={12}>
+                    <Card elevation={2} sx={{ height: '100%' }}>
+                      <CardContent>
+                        <Typography variant="h5" component="div" align='left'>
+                          Login into <code>{APIList[0].name}</code>
+                        </Typography>
+                        <Typography variant="body2" align='left'>
+                          {APIList[0].description}
+                        </Typography>
+                        {APIList[0].tip && (
+                          <Typography variant="body2" align="left" color="error" sx={{ mt: 1 }}>
+                            {APIList[0].tip}
+                          </Typography>
+                        )}
+                        {APIList[0].formdata && APIList[0].formdata.map((formitem, formindex) => (
+                          <TextField
+                            key={formindex}
+                            margin="normal"
+                            required
+                            fullWidth
+                            id={`${APIList[0].name}-${formitem.name}`}
+                            label={formitem.name.toUpperCase()}
+                            name={`${APIList[0].name}-${formitem.name}`}
+                            type={formitem.type}
+                            autoComplete={`${APIList[0].name}-${formitem.name}`}
+                            defaultValue={localStorage.getItem(`${APIList[0].name}-${formitem.name}`) || ""}
+                          />))}
+                      </CardContent>
+                      <CardActions>
+                        {isLoading[0] ? (<LinearProgress sx={{ width: '100%' }} />) : (<></>)}
+                      </CardActions>
+                    </Card>
+                  </Grid>
+
+                  {/* Gradescope and Blackboard - Side by Side */}
+                  {APIList.slice(1).map((item, index) => (
+                    <Grid item xs={4} sm={4} md={4} lg={6} key={index + 1}>
+                      <Card elevation={2} sx={{ height: '100%' }}>
                         <CardContent>
                           <Typography variant="h5" component="div" align='left'>
                             Login into <code>{item.name}</code>
@@ -262,13 +302,7 @@ function App() {
                               type={formitem.type}
                               autoComplete={`${item.name}-${formitem.name}`}
                               defaultValue={localStorage.getItem(`${item.name}-${formitem.name}`) || ""}
-                              disabled={item.closing !== undefined}
                             />))}
-                            {item.closing && (
-                              <Typography variant="body2" color="error">
-                                {item.closing}
-                              </Typography>
-                            )}
                         </CardContent>
                         <CardActions>
                           {isLoading[index] ? (<LinearProgress sx={{ width: '100%' }} />) : (<></>)}
